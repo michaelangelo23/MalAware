@@ -75,16 +75,10 @@ ParseResults.txt
 # Important markdown files
 *.md
 !README.md
-!Contributing.md
-!"Code of Conduct.md"
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
 !SECURITY.md
 !CHANGELOG.md
-!sampleOutput.md
-!SAMPLE_OUTPUT.md
-PROJECT_SUMMARY.md
-CRITICAL_ISSUES_ANALYSIS.md
-FINAL_VALIDATION_REPORT.md
-COMPREHENSIVE_ANALYSIS_REPORT.md
 
 # Test files and folders
 ToAdd/
