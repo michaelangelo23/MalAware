@@ -310,7 +310,41 @@ std::string OutputManager::formatError(const std::string& error) const {
 }
 
 void OutputManager::printUsage() const {
-    std::cout << "\n=== MalAware Analysis Tool - Output Options ===\n\n";
+    std::cout << "usage: malaware [-h] [-m MODE] [-o OUTPUT] [-f FORMAT] [-l LEVEL] [--deep] [--quiet] FILE\n\n"
+              << "Advanced Portable Executable (PE) analysis tool for malware detection and security assessment.\n\n"
+              << "positional arguments:\n"
+              << "  FILE                  Path to PE file for analysis\n\n"
+              << "optional arguments:\n"
+              << "  -h, --help            Show this help message and exit\n"
+              << "  -m MODE, --mode MODE   Analysis mode to use:\n"
+              << "                         quick     - Basic PE structure analysis\n"
+              << "                         security  - Security features analysis (default)\n"
+              << "                         malware   - Full malware analysis\n"
+              << "                         forensic  - In-depth forensic analysis\n"
+              << "  -o OUTPUT, --output OUTPUT\n"
+              << "                         Save analysis results to specified file\n"
+              << "  -f FORMAT, --format FORMAT\n"
+              << "                         Output format: text, xml, csv, or summary (default: text)\n"
+              << "  -l LEVEL, --level LEVEL\n"
+              << "                         Detail level: minimal, summary, standard, detailed, full\n"
+              << "  --deep                Perform deep analysis of file contents\n"
+              << "  --quiet              Minimize output, show only important findings\n\n"
+              << "analysis features:\n"
+              << "  --hashes             Generate file hashes (MD5, SHA1, SHA256, ImpHash)\n"
+              << "  --fuzzy              Include fuzzy hashes (SSDeep, TLSH)\n"
+              << "  --entropy            Analyze file and section entropy\n"
+              << "  --imports            Analyze imported functions\n"
+              << "  --resources          Parse PE resources\n"
+              << "  --strings            Extract and analyze strings\n"
+              << "  --sign               Verify digital signatures\n"
+              << "  --packer             Check for packer signatures\n"
+              << "  --yara RULES         Apply custom YARA rules\n"
+              << "  --vt KEY             Query VirusTotal using API key\n\n"
+              << "examples:\n"
+              << "  malaware sample.exe              # Standard analysis\n"
+              << "  malaware -m malware sample.dll   # Full malware analysis\n"
+              << "  malaware --deep --entropy file   # Deep analysis with entropy\n"
+              << "  malaware -o report.xml sample    # Save results to file\n";
 
     std::cout << "OUTPUT LEVELS:\n";
     std::cout << "  -q, --quiet      Minimal output (threats only)\n";

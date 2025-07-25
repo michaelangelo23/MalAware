@@ -9,6 +9,7 @@
 *.lib
 *.a
 *.bin
+*.sh
 
 # Executables (but keep testFolder examples)
 MalAware*
@@ -21,6 +22,7 @@ obj/
 obj_*/
 bin/
 dist/
+release/
 
 # CMake files
 CMakeFiles/
@@ -73,6 +75,10 @@ ParseResults.txt
 # Important markdown files
 *.md
 !README.md
+!Contributing.md
+!"Code of Conduct.md"
+!SECURITY.md
+!CHANGELOG.md
 !sampleOutput.md
 !SAMPLE_OUTPUT.md
 PROJECT_SUMMARY.md
@@ -80,12 +86,11 @@ CRITICAL_ISSUES_ANALYSIS.md
 FINAL_VALIDATION_REPORT.md
 COMPREHENSIVE_ANALYSIS_REPORT.md
 
-# Internal documentation (private)
-changelogs.md
-
 # Test files and folders
 ToAdd/
 testFolder/
+malSamples/
+test_samples.sh
 *.test
 *.spec
 

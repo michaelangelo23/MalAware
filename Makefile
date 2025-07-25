@@ -4,8 +4,9 @@ CXXFLAGS = -std=c++17 -O2 -Wall -Wextra -pthread
 CXXFLAGS_DEBUG = -std=c++17 -g -O0 -Wall -Wextra -pthread -DDEBUG
 INCLUDES = -Iinclude -I.
 LIBS = -lfuzzy
+LIBS_WIN = 
+CXXFLAGS_WIN = -std=c++17 -O2 -Wall -Wextra -DWIN32_BUILD -DNO_FUZZY_HASH
 
-# Source files (only files that actually exist)
 CORE_SOURCES = src/peFileHandler.cpp src/peParser.cpp src/peHeaderParser.cpp \
                src/peSectionParser.cpp src/peImportExport.cpp \
                src/PEResourceParser.cpp src/PESecurityAnalyzer.cpp \
@@ -18,44 +19,36 @@ CORE_SOURCES = src/peFileHandler.cpp src/peParser.cpp src/peHeaderParser.cpp \
                src/PESuspiciousTechniqueAnalyzer.cpp src/PEThreatIntelligence.cpp \
                src/PKCS7Parser.cpp src/peCommon.cpp
 
-# Targets
 TARGET_LINUX = MalAware
 TARGET_WIN = MalAwareWindows.exe
 
-# Default target
 all: $(TARGET_LINUX)
 
-# Standard version
 linux: $(TARGET_LINUX)
 
 $(TARGET_LINUX):
 	@echo "Building MalAware..."
 	$(CXX) $(CXXFLAGS) $(INCLUDES) main.cpp $(CORE_SOURCES) -o $(TARGET_LINUX) $(LIBS)
 
-# Debug version
 debug:
 	@echo "Building MalAware (Debug)..."
 	$(CXX) $(CXXFLAGS_DEBUG) $(INCLUDES) main.cpp $(CORE_SOURCES) -o $(TARGET_LINUX)_debug $(LIBS)
 
-# Windows cross-compilation
 windows: $(TARGET_WIN)
 
 $(TARGET_WIN):
 	@echo "Building Windows version..."
-	$(CXX_WIN) $(CXXFLAGS) $(INCLUDES) main.cpp $(CORE_SOURCES) -o $(TARGET_WIN) -static-libgcc -static-libstdc++ $(LIBS)
+	$(CXX_WIN) $(CXXFLAGS_WIN) $(INCLUDES) main.cpp $(CORE_SOURCES) -o $(TARGET_WIN) -static-libgcc -static-libstdc++ $(LIBS_WIN)
 
-# Clean targets
 clean:
 	@echo "Cleaning build files..."
 	rm -f $(TARGET_LINUX) $(TARGET_LINUX)_debug $(TARGET_WIN) MalAware_test MalAware_minimal
 
-# Install dependencies
 install-deps:
 	@echo "Installing required dependencies..."
 	sudo apt update
 	sudo apt install -y libfuzzy-dev build-essential
 
-# Help target
 help:
 	@echo "Available targets:"
 	@echo "  all (default) - Build the standard PE File Parser"

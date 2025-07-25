@@ -1,5 +1,7 @@
 #include "../include/FuzzyHashCalculator.h"
+#ifndef NO_FUZZY_HASH
 #include <fuzzy.h>
+#endif
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -18,27 +20,31 @@ std::string FuzzyHashCalculator::calculateSSDeep(const uint8_t* data, size_t siz
         return "[Error: Invalid data for SSDeep calculation]";
     }
 
-
+#ifdef NO_FUZZY_HASH
+    return "[SSDeep not available in Windows build]";
+#else
     char result[FUZZY_MAX_RESULT];
     int ret = fuzzy_hash_buf(data, static_cast<uint32_t>(size), result);
-
     if (ret != 0) {
         return "[Error: SSDeep calculation failed]";
     }
-
     return std::string(result);
+#endif
 }
 
-std::string FuzzyHashCalculator::calculateSSDeep(const std::string& filePath) {
+std::string FuzzyHashCalculator::calculateSSDeep(const std::string& filePath [[maybe_unused]]) {
+#ifdef NO_FUZZY_HASH
+    return "[SSDeep not available in Windows build]";
+#else
     char result[FUZZY_MAX_RESULT];
     int ret = fuzzy_hash_filename(filePath.c_str(), result);
-
     if (ret != 0) {
         return "[Error: Could not calculate SSDeep for file]";
     }
-
     return std::string(result);
+#endif
 }
+
 std::string FuzzyHashCalculator::calculateTLSH(const uint8_t* data, size_t size) {
     if (!data || size < 50) {
         return "[Error: Insufficient data for TLSH calculation]";
@@ -48,6 +54,7 @@ std::string FuzzyHashCalculator::calculateTLSH(const uint8_t* data, size_t size)
     updateTLSHHash(state, data, size);
     return finalizeTLSHHash(state);
 }
+
 std::string FuzzyHashCalculator::calculateVHash(const uint8_t* data, size_t size) {
     if (!data || size == 0) {
         return "[Error: Invalid data for VHash calculation]";
@@ -56,6 +63,7 @@ std::string FuzzyHashCalculator::calculateVHash(const uint8_t* data, size_t size
     extractVHashFeatures(state, data, size);
     return finalizeVHash(state);
 }
+
 FuzzyHashCalculator::FuzzyHashes FuzzyHashCalculator::calculateAllHashes(const std::string& filePath) {
     FuzzyHashes result;
     result.success = false;
@@ -86,10 +94,14 @@ FuzzyHashCalculator::FuzzyHashes FuzzyHashCalculator::calculateAllHashes(const s
     return result;
 }
 
-int FuzzyHashCalculator::compareSSDeep(const std::string& hash1, const std::string& hash2) {
-
+int FuzzyHashCalculator::compareSSDeep(const std::string& hash1 [[maybe_unused]], const std::string& hash2 [[maybe_unused]]) {
+#ifdef NO_FUZZY_HASH
+    return -1; // Not available in Windows build
+#else
     return fuzzy_compare(hash1.c_str(), hash2.c_str());
+#endif
 }
+
 int FuzzyHashCalculator::compareTLSH(const std::string& hash1, const std::string& hash2) {
     if (hash1 == hash2) return 0;
     if (hash1.empty() || hash2.empty()) return 1000;
@@ -103,13 +115,13 @@ int FuzzyHashCalculator::compareTLSH(const std::string& hash1, const std::string
     return distance;
 }
 
-
 void FuzzyHashCalculator::initTLSHState(TLSHState& state) {
     state.checksum = 0;
     state.sliding_window = 0;
     state.bucket_array.resize(256, 0);
     state.data_len = 0;
 }
+
 void FuzzyHashCalculator::updateTLSHHash(TLSHState& state, const uint8_t* data, size_t len) {
     for (size_t i = 0; i < len; ++i) {
         state.sliding_window = ((state.sliding_window << 1) & 0xFFFFFF) | (data[i] & 1);
@@ -121,6 +133,7 @@ void FuzzyHashCalculator::updateTLSHHash(TLSHState& state, const uint8_t* data, 
         state.data_len++;
     }
 }
+
 std::string FuzzyHashCalculator::finalizeTLSHHash(TLSHState& state) {
     std::stringstream ss;
     ss << "T1" << std::hex << std::setfill('0');
@@ -131,6 +144,7 @@ std::string FuzzyHashCalculator::finalizeTLSHHash(TLSHState& state) {
     }
     return ss.str();
 }
+
 void FuzzyHashCalculator::extractVHashFeatures(VHashState& state, const uint8_t* data, size_t size) {
     state.features.clear();
     state.section_count = 0;
@@ -152,6 +166,7 @@ void FuzzyHashCalculator::extractVHashFeatures(VHashState& state, const uint8_t*
         }
     }
 }
+
 std::string FuzzyHashCalculator::finalizeVHash(VHashState& state) {
     std::stringstream ss;
     ss << "V1:";
@@ -163,6 +178,7 @@ std::string FuzzyHashCalculator::finalizeVHash(VHashState& state) {
     ss << std::setw(8) << featureHash;
     return ss.str();
 }
+
 uint32_t FuzzyHashCalculator::rollingHash(const uint8_t* data, size_t len) {
     uint32_t hash = 0;
     for (size_t i = 0; i < len; ++i) {
@@ -170,6 +186,7 @@ uint32_t FuzzyHashCalculator::rollingHash(const uint8_t* data, size_t len) {
     }
     return hash;
 }
+
 uint8_t FuzzyHashCalculator::calculatePearsonHash(const uint8_t* data, size_t len) {
     static const uint8_t pearsonTable[256] = {
         98, 6, 85, 150, 36, 23, 112, 164, 135, 207, 169, 5, 26, 64, 165, 219,
@@ -195,6 +212,7 @@ uint8_t FuzzyHashCalculator::calculatePearsonHash(const uint8_t* data, size_t le
     }
     return hash;
 }
+
 std::string FuzzyHashCalculator::base64Encode(const std::vector<uint8_t>& data) {
     const char* base64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string result;
