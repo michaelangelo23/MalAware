@@ -10,7 +10,7 @@
 
 A comprehensive Portable Executable (PE) file analysis tool that provides deep inspection capabilities for Windows PE files with a focus on security analysis, malware detection, and forensic investigation.
 
-## Getting Started - Complete Walkthrough
+## Getting Started 
 
 ### System Requirements
 - **Operating System**: Linux (primary), Windows (cross-compilation support)
