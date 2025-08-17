@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 
         if (arg.front() == '-') {
 
-            if ((arg == "-o" || arg == "-f" || arg == "--vt-api-key") && i + 1 < argc) {
+            if ((arg == "-o" || arg == "-f") && i + 1 < argc) {
                 i++;
             }
             continue;
